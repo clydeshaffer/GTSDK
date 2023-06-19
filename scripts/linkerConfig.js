@@ -1,4 +1,4 @@
-export function generateLinkerConfig(assetFolderNames, extra_code_banks) {
+function generateLinkerConfig(assetFolderNames, extra_code_banks) {
     function genSection(name, entries) {
         var outText = name + ' {\n';
         for(var entName in entries) {
@@ -149,3 +149,7 @@ SYMBOLS {
     printout(footer);
     return output;
 }
+
+module.exports = {
+    generateLinkerConfig
+};
