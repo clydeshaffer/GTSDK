@@ -5,13 +5,15 @@ const fs = require('fs');
 
 const assetsDir = './assets';
 const linkerConfigFileName = './gametank-2M.cfg';
+const bankMakeListFileName = './bankMakeList';
 
 
 const dirInfo = fs.readdirSync(assetsDir);
 
-const linkerText = LinkerConfig.generateLinkerConfig(dirInfo, 1);
+const buildCfg = LinkerConfig.generateLinkerConfig(dirInfo, 1);
 
-fs.writeFileSync(linkerConfigFileName, linkerText);
+fs.writeFileSync(linkerConfigFileName, buildCfg.linker);
+fs.writeFileSync(bankMakeListFileName, buildCfg.bankMakeList);
 
 
 AssetAssembly.generateAssetAssemblyFiles(dirInfo);

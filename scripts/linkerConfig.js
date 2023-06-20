@@ -1,3 +1,10 @@
+function hex(num) {
+    if(num < 16) {
+        return '0' + num.toString(16).toUpperCase();
+    }
+    return num.toString(16).toUpperCase();
+}
+
 function generateLinkerConfig(assetFolderNames, extra_code_banks) {
     function genSection(name, entries) {
         var outText = name + ' {\n';
@@ -93,11 +100,13 @@ SYMBOLS {
 
 
     const asset_banks = assetFolderNames.length;
+    const bankNames = [];
 
     for(var i = 0; i < asset_banks; i++) {
         const bankNum = i;
-        const bankName = 'BANK' + bankNum.toString(16).toUpperCase();
-        const bankFile = `"%O.bank${bankNum.toString(16).toUpperCase()}"`;
+        const bankName = 'BANK' + hex(bankNum);
+        bankNames.push(`bank${hex(bankNum)}`);
+        const bankFile = `"%O.bank${hex(bankNum)}"`;
         const segmentName = assetFolderNames[i];
         section_MEMORY[bankName] = {
             start : '$8000',
@@ -114,8 +123,9 @@ SYMBOLS {
 
     for(var i = 1; i <= extra_code_banks; i++) {
         const bankNum = 126 - extra_code_banks + i;
-        const bankName = 'BANK' + bankNum.toString(16).toUpperCase();
-        const bankFile = `"%O.bank${bankNum.toString(16).toUpperCase()}"`;
+        const bankName = 'BANK' + hex(bankNum);
+        bankNames.push(`bank${hex(bankNum)}`);
+        const bankFile = `"%O.bank${hex(bankNum)}"`;
         const segmentName = 'PROG' + (extra_code_banks - i).toString(16).toUpperCase()
         section_MEMORY[bankName] = {
             start : '$8000',
@@ -138,6 +148,8 @@ SYMBOLS {
         fill : 'yes'
     };
 
+    bankNames.push('bank7F');
+
     var output = '';
     function printout(str) {
         output += str + '\n';
@@ -147,7 +159,11 @@ SYMBOLS {
     printout('');
     printout(genSection('SEGMENTS', section_SEGMENTS));
     printout(footer);
-    return output;
+
+    return {
+        linker: output,
+        bankMakeList : `_BANKS = ${bankNames.join(' ')}`
+    }
 }
 
 module.exports = {
