@@ -1,5 +1,5 @@
 const LinkerConfig = require('./linkerConfig');
-const AssetAssembly = require('./assetsAsm');
+const AssetAssembly = require('./assets_asm');
 
 const fs = require('fs');
 

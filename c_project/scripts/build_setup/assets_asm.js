@@ -36,7 +36,7 @@ function generateAssetsAssemblyFile(dir) {
         const symName = filenameToSymbolName(dirName, fname);
         exportLines.push(`    .export ${symName}`);
         incbinLines.push(`${symName}:`)
-        incbinLines.push(`    .incbin "${dirName}/${transformFilename(fname)}"`);
+        incbinLines.push(`    .incbin "build/assets/${dirName}/${transformFilename(fname)}"`);
         incbinLines.push('');
     });
 
@@ -74,7 +74,7 @@ function generateAssetAssemblyFiles(assetFolderNames) {
 
     assetFolderNames.forEach((folder) => {
         const assetsAsm = generateAssetsAssemblyFile(`./${assetsDir}/${folder}`);
-        const assetsFileName = `${folder}.s`;
+        const assetsFileName = `${folder}.s.asset`;
 
         const assetsHeader = generateAssetsHeaderFile(`./${assetsDir}/${folder}`);
         const assetsHeaderName = `${folder}.h`

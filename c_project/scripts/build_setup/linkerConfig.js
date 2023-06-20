@@ -49,7 +49,7 @@ function generateLinkerConfig(assetFolderNames, extra_code_banks) {
         BSS : {
             load : 'RAM',
             type : 'bss',
-            optional : 'yes'
+            define : 'yes'
         },
         HEAP : {
             load : 'RAM',
@@ -98,8 +98,8 @@ SYMBOLS {
 }
 `;
 
-
-    const asset_banks = assetFolderNames.length;
+    const names2 = ['COMMON', ...assetFolderNames];
+    const asset_banks = names2.length;
     const bankNames = [];
 
     for(var i = 0; i < asset_banks; i++) {
@@ -107,7 +107,7 @@ SYMBOLS {
         const bankName = 'BANK' + hex(bankNum);
         bankNames.push(`bank${hex(bankNum)}`);
         const bankFile = `"%O.bank${hex(bankNum)}"`;
-        const segmentName = assetFolderNames[i];
+        const segmentName = names2[i];
         section_MEMORY[bankName] = {
             start : '$8000',
             size : '$4000',
@@ -148,6 +148,14 @@ SYMBOLS {
         fill : 'yes'
     };
 
+    section_MEMORY['FILLER'] = {
+        start : '$8000',
+        size : '$' + (Math.pow(2,21) - (extra_code_banks + asset_banks + 1) * 16384).toString(16).toUpperCase(),
+        file : '"%O.filler"',
+        fill : 'yes'
+    }
+
+    bankNames.push('filler');
     bankNames.push('bank7F');
 
     var output = '';
